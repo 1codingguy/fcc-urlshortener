@@ -6,9 +6,7 @@ const app = express()
 require('dotenv').config()
 
 const connectDB = require('./db/connect')
-const { getAllUrls } = require('./controller/url')
-
-
+const { getAllUrls, addUrl, deleteUrl } = require('./controller/url')
 
 // Basic Configuration
 const port = process.env.PORT || 3000
@@ -19,7 +17,7 @@ app.use('/public', express.static(`${process.cwd()}/public`))
 
 // middleware
 app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+// app.use(express.urlencoded({ extended: true }))
 
 app.get('/', function (req, res) {
   res.sendFile(process.cwd() + '/views/index.html')
@@ -27,13 +25,9 @@ app.get('/', function (req, res) {
 
 app.get('/api/allUrl', getAllUrls)
 
-app.post('/api/shorturl', (req, res) => {
-  const { url: original_url } = req.body
+app.post('/api/shorturl', addUrl)
 
-  // To-do: validate the URL
-
-  res.status(201).json(req.body)
-})
+app.delete('/api/:id', deleteUrl)
 
 const start = async () => {
   try {
