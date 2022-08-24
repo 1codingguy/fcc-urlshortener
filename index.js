@@ -6,6 +6,7 @@ const app = express()
 require('dotenv').config()
 
 const connectDB = require('./db/connect')
+const { getAllUrls } = require('./controller/url')
 
 
 
@@ -23,6 +24,8 @@ app.use(express.urlencoded({ extended: true }))
 app.get('/', function (req, res) {
   res.sendFile(process.cwd() + '/views/index.html')
 })
+
+app.get('/api/allUrl', getAllUrls)
 
 app.post('/api/shorturl', (req, res) => {
   const { url: original_url } = req.body
