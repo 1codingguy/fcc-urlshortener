@@ -6,7 +6,13 @@ const app = express()
 require('dotenv').config()
 
 const connectDB = require('./db/connect')
-const { getAllUrls, addUrl, deleteUrl } = require('./controller/url')
+const {
+  getAllUrls,
+  addUrl,
+  deleteUrl,
+
+  deleteAll,
+} = require('./controller/url')
 
 // Basic Configuration
 const port = process.env.PORT || 3000
@@ -28,6 +34,10 @@ app.get('/api/allUrl', getAllUrls)
 app.post('/api/shorturl', addUrl)
 
 app.delete('/api/:id', deleteUrl)
+
+
+
+app.delete('/api/:id/deleteAll', deleteAll)
 
 const start = async () => {
   try {

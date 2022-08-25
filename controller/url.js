@@ -1,10 +1,23 @@
+// the url model defined with schema
 // eq to const urls = mongoose.model('URL', URLSchema)
 const Url = require('../models/url')
+
+// node url module
+const url = require('node:url')
+
+const deleteAll = async (req, res) => {
+  try {
+    const result = await Url.deleteMany({})
+    res.status(200).json(result)
+  } catch (error) {
+    res.status(500).json({ msg: error })
+  }
+}
 
 const getAllUrls = async (req, res) => {
   try {
     const urls = await Url.find({})
-    res.status(200).json({ urls })
+    res.status(200).json(urls)
   } catch (error) {
     res.status(500).json({ msg: error })
   }
@@ -12,14 +25,17 @@ const getAllUrls = async (req, res) => {
 
 const addUrl = async (req, res) => {
   try {
+    const hostname = url.parse(req.body.url).hostname
+    if (!hostname) return res.json({ error: 'invalid url' })
+
     // get allUrls stored in DB
     const allUrls = await Url.find({})
-    const id = allUrls.length !== 0 ? allUrls.length + 1 : 1
+    const short_url = allUrls.length !== 0 ? allUrls.length + 1 : 1
+
     const { url: original_url } = req.body
+    const created = await Url.create({ original_url, short_url })
 
-    const url = await Url.create({ original_url, id })
-
-    res.status(200).json({ url })
+    res.status(200).json(created)
   } catch (error) {
     res.status(500).json({ msg: error })
   }
@@ -40,4 +56,5 @@ module.exports = {
   getAllUrls,
   addUrl,
   deleteUrl,
+  deleteAll,
 }
