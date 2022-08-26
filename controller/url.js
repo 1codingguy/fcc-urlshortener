@@ -14,6 +14,21 @@ const deleteAll = async (req, res) => {
   }
 }
 
+const getUrl = async (req, res) => {
+  try {
+    const { id: short_url } = req.params
+    const exist = await Url.find({ short_url })
+    if (exist.length === 0) return res.status(404).json({msg: 'short_url not found'})
+
+    console.log(exist[0])
+    console.log(exist[0].original_url)
+
+    res.status(302).redirect(exist[0].original_url)
+  } catch (error) {
+    res.status(500).json({ msg: error })
+  }
+}
+
 const getAllUrls = async (req, res) => {
   try {
     const urls = await Url.find({})
@@ -57,4 +72,5 @@ module.exports = {
   addUrl,
   deleteUrl,
   deleteAll,
+  getUrl,
 }
